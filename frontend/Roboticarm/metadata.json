@@ -1,0 +1,6 @@
+{
+  "name": "Kinesis Vision CCTV",
+  "description": "Industrial AI CCTV monitoring and incident logging dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

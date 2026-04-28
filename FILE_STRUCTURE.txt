@@ -1,0 +1,317 @@
+Safety Interlock System - Complete File Structure
+================================================
+
+WEG/
+│
+├── 📚 DOCUMENTATION (5 files)
+│   ├── README.md               Main documentation - start here
+│   ├── QUICKSTART.md          5-minute getting started guide
+│   ├── INSTALL.md             Detailed installation instructions
+│   ├── ARCHITECTURE.md        Technical deep-dive for developers
+│   └── PROJECT_SUMMARY.md     Overview for future maintainers
+│
+├── 🐍 ENTRY POINTS (2 files)
+│   ├── main.py                Primary entry point - run this first
+│   └── example_advanced.py    Advanced usage demonstrations
+│
+├── 📦 CORE PACKAGE: safety_interlock/
+│   │
+│   ├── __init__.py           Package initialization & exports
+│   │
+│   ├── 🎛️ CONFIGURATION
+│   │   └── config.py          All settings, thresholds, parameters
+│   │                          ⚠️ MODIFY THIS to tune system
+│   │
+│   ├── 🤖 DETECTION
+│   │   └── detector.py        YOLO person detection
+│   │                          - Model loading
+│   │                          - GPU acceleration
+│   │                          - Inference
+│   │
+│   ├── 📐 GEOMETRY
+│   │   └── zone_manager.py    Danger zone management
+│   │                          - Interactive definition
+│   │                          - Overlap calculation
+│   │                          - Zone persistence
+│   │
+│   ├── 🔄 STATE MANAGEMENT
+│   │   └── state_machine.py   State transitions & triggers
+│   │                          - CLEAR/WARNING/DANGER states
+│   │                          - Temporal smoothing
+│   │                          - Hysteresis
+│   │                          - Event generation
+│   │
+│   ├── 🎬 PROCESSING
+│   │   └── video_processor.py Main orchestrator
+│   │                          - Video I/O
+│   │                          - Component coordination
+│   │                          - Processing loop
+│   │                          - Visualization
+│   │
+│   ├── 📝 LOGGING
+│   │   └── logger.py          Event logging & reports
+│   │                          - Text logs
+│   │                          - JSON export
+│   │                          - Frame capture
+│   │                          - Report generation
+│   │
+│   └── 🔧 UTILITIES
+│       └── utils.py           Helper functions
+│                              - Time formatting
+│                              - IoU calculation
+│                              - Drawing utilities
+│                              - Video validation
+│
+├── 📋 CONFIGURATION
+│   ├── requirements.txt       Python dependencies
+│   ├── .gitignore            Git ignore patterns
+│   └── CLAUDE.md             Project instructions
+│
+├── 🎬 INPUT/OUTPUT
+│   ├── videos/               📁 Place test videos here
+│   │   └── .gitkeep         Placeholder
+│   │
+│   └── output/              📁 Results generated here
+│       ├── logs/            Text & JSON logs
+│       ├── frames/          Trigger screenshots
+│       ├── annotated_*.mp4  Visualization videos
+│       └── zone_definition.json  Saved zone coordinates
+│
+└── 🖼️ IMAGES
+    └── image.png            Camera angle reference
+
+
+DETAILED COMPONENT BREAKDOWN
+=============================
+
+1. CORE MODULES (7 files)
+   └─ safety_interlock/
+      ├─ __init__.py          (48 lines)  Package setup
+      ├─ config.py            (98 lines)  Configuration
+      ├─ detector.py          (124 lines) Person detection
+      ├─ zone_manager.py      (247 lines) Zone management
+      ├─ state_machine.py     (245 lines) State logic
+      ├─ video_processor.py   (289 lines) Main processor
+      ├─ logger.py            (217 lines) Logging system
+      └─ utils.py             (166 lines) Helpers
+
+2. ENTRY SCRIPTS (2 files)
+   ├─ main.py               (60 lines)  CLI interface
+   └─ example_advanced.py   (287 lines) Advanced examples
+
+3. DOCUMENTATION (5 files)
+   ├─ README.md             (520 lines) Main guide
+   ├─ QUICKSTART.md         (380 lines) Quick start
+   ├─ INSTALL.md            (340 lines) Installation
+   ├─ ARCHITECTURE.md       (780 lines) Technical docs
+   └─ PROJECT_SUMMARY.md    (650 lines) Overview
+
+Total: ~3,450 lines of Python code + 2,670 lines of documentation
+
+
+DATA FLOW
+=========
+
+1. INPUT STAGE
+   videos/test_video.mp4
+         ↓
+   VideoProcessor.__init__()
+         ↓
+   Load video properties
+
+2. SETUP STAGE
+   User defines zone (interactive or predefined)
+         ↓
+   ZoneManager creates polygon
+         ↓
+   Initialize YOLO model
+         ↓
+   Create state machine & logger
+
+3. PROCESSING STAGE
+   For each frame:
+     Read frame (OpenCV)
+           ↓
+     PersonDetector.detect()
+           ↓
+     ZoneManager.calculate_overlap()
+           ↓
+     SafetyStateMachine.update()
+           ↓
+     SafetyLogger.log_event()
+           ↓
+     VideoProcessor._annotate_frame()
+           ↓
+     Display/Save (optional)
+
+4. OUTPUT STAGE
+   SafetyLogger.generate_report()
+         ↓
+   output/logs/log_*.txt
+   output/logs/log_*.json
+   output/frames/frame_*_STOP.jpg
+   output/annotated_video.mp4
+
+
+CONFIGURATION HIERARCHY
+========================
+
+config.py (base configuration)
+    ↓
+detector.py (uses YOLO_MODEL, CONFIDENCE_THRESHOLD, USE_GPU)
+    ↓
+zone_manager.py (uses PREDEFINED_ZONE, visualization settings)
+    ↓
+state_machine.py (uses thresholds, smoothing, hysteresis)
+    ↓
+video_processor.py (uses output, display settings)
+    ↓
+logger.py (uses output paths, log level)
+
+
+MODIFICATION POINTS
+===================
+
+To change detection sensitivity:
+  → Edit: config.py (CONFIDENCE_THRESHOLD, DANGER_THRESHOLD)
+
+To change model:
+  → Edit: config.py (YOLO_MODEL = "yolov8s.pt")
+
+To add hardware integration:
+  → Modify: state_machine.py (_on_state_transition method)
+
+To customize logging:
+  → Modify: logger.py (log_event, generate_report methods)
+
+To add new features:
+  → Create: new module in safety_interlock/
+  → Import: in video_processor.py
+  → Configure: add settings to config.py
+
+
+EXECUTION FLOW
+==============
+
+Command: python main.py videos/test.mp4
+
+main.py
+  ├─ Validate arguments
+  ├─ Check file exists
+  └─ Create VideoProcessor
+       ├─ Load video
+       ├─ Initialize detector
+       │    └─ Load YOLO model
+       ├─ Initialize zone_manager
+       ├─ Initialize state_machine
+       └─ Initialize logger
+            └─ Create log files
+
+  ├─ Define zone (if not predefined)
+  │    └─ Interactive clicking
+  │         └─ Save to zone_definition.json
+
+  └─ Process video
+       ├─ Loop through frames
+       │    ├─ Read frame
+       │    ├─ Detect persons
+       │    ├─ Calculate overlaps
+       │    ├─ Update state
+       │    ├─ Log events
+       │    └─ Visualize
+       │
+       └─ Generate report
+            ├─ Text log
+            ├─ JSON log
+            └─ Statistics
+
+
+DEPENDENCIES GRAPH
+==================
+
+main.py
+  └─ VideoProcessor
+       ├─ PersonDetector
+       │    ├─ torch
+       │    ├─ ultralytics (YOLO)
+       │    └─ numpy
+       │
+       ├─ ZoneManager
+       │    ├─ cv2 (OpenCV)
+       │    ├─ shapely (geometry)
+       │    └─ numpy
+       │
+       ├─ SafetyStateMachine
+       │    └─ collections (deque)
+       │
+       └─ SafetyLogger
+            ├─ json
+            ├─ datetime
+            └─ cv2
+
+
+FILE SIZES (approximate)
+========================
+
+Code:
+  safety_interlock/*.py      ~1,500 lines
+  main.py + examples         ~350 lines
+  Total Python code:         ~1,850 lines
+
+Documentation:
+  *.md files                 ~2,700 lines
+
+Dependencies:
+  PyTorch + YOLO             ~500 MB
+  Models (downloaded)        ~6-130 MB (depending on model)
+
+Output (per video):
+  Text log                   ~10-50 KB
+  JSON log                   ~20-100 KB
+  Trigger frames             ~500 KB each
+  Annotated video            ~50-200 MB (depends on original)
+
+
+QUICK REFERENCE
+===============
+
+Run basic test:
+  python main.py videos/test.mp4
+
+Run advanced examples:
+  python example_advanced.py
+
+Modify settings:
+  Edit: safety_interlock/config.py
+
+Check GPU:
+  python -c "import torch; print(torch.cuda.is_available())"
+
+View logs:
+  cat output/logs/log_*.txt
+
+View JSON data:
+  cat output/logs/log_*.json
+
+
+KEY FILES TO KNOW
+=================
+
+For users:
+  QUICKSTART.md    → Start here
+  main.py          → Run this
+  config.py        → Tune this
+
+For developers:
+  ARCHITECTURE.md  → Understand system
+  video_processor.py → Main logic
+  state_machine.py → Trigger logic
+
+For troubleshooting:
+  INSTALL.md       → Setup issues
+  output/logs/     → Error messages
+  config.py        → Check settings
+
+
+END OF FILE STRUCTURE
+=====================

@@ -1,0 +1,18 @@
+# Safety Interlock System Dependencies
+
+# Core ML/CV libraries
+torch>=2.0.0
+torchvision>=0.15.0
+ultralytics>=8.0.0
+opencv-python>=4.8.0
+
+# Geometry calculations
+shapely>=2.0.0
+
+# Utilities
+numpy>=1.24.0
+pygame>=2.5.0
+
+# Backend server
+flask>=3.0.0
+flask-cors>=4.0.0
