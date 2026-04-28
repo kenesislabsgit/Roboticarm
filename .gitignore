@@ -34,11 +34,6 @@ wheels/
 output/
 !output/.gitkeep
 
-# Video files (large)
-videos/*.mp4
-videos/*.avi
-videos/*.mov
-!videos/.gitkeep
 
 # Models (will be downloaded)
 models/
